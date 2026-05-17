@@ -178,17 +178,17 @@ const ye="waxup-water-surface",et="(prefers-reduced-motion: reduce)",tt="(pointe
       // narrow crescent, not a filled mask, to avoid the old oval/triangle
       // artifacts while still giving the phone a more physical tidal push.
       float lowerDy = phoneBottom - v_uv.y;
-      float lowerReach = smoothstep(0.0, 0.020, lowerDy) * (1.0 - smoothstep(0.20, 0.46, lowerDy));
+      float lowerReach = smoothstep(0.0, 0.016, lowerDy) * (1.0 - smoothstep(0.14, 0.30, lowerDy));
       float lowerX = abs(v_uv.x - phoneCenterX);
-      float lowerNormX = lowerX / max(u_phone.z * 0.62, 0.001);
+      float lowerNormX = lowerX / max(u_phone.z * 0.50, 0.001);
       float lowerCurve = phoneBottom - 0.020 - lowerNormX * lowerNormX * 0.050 +
         sin(v_uv.x * 24.0 + waveTravel * 4.0) * 0.006;
-      float lowerCrest = exp(-pow((v_uv.y - lowerCurve) / 0.032, 2.0)) *
+      float lowerCrest = exp(-pow((v_uv.y - lowerCurve) / 0.026, 2.0)) *
         (1.0 - smoothstep(0.40, 1.18, lowerNormX)) * lowerReach;
-      float lowerTrough = exp(-pow((v_uv.y - (lowerCurve - 0.052)) / 0.050, 2.0)) *
+      float lowerTrough = exp(-pow((v_uv.y - (lowerCurve - 0.052)) / 0.040, 2.0)) *
         (1.0 - smoothstep(0.32, 1.22, lowerNormX)) * lowerReach;
       float lowerArmLine = phoneBottom - 0.038 - max(lowerX - u_phone.z * 0.28, 0.0) * 0.46;
-      float lowerArm = exp(-pow((v_uv.y - lowerArmLine) / 0.024, 2.0)) *
+      float lowerArm = exp(-pow((v_uv.y - lowerArmLine) / 0.019, 2.0)) *
         smoothstep(u_phone.z * 0.24, u_phone.z * 0.58, lowerX) *
         (1.0 - smoothstep(u_phone.z * 0.58, u_phone.z * 1.12, lowerX)) *
         lowerReach;
@@ -508,22 +508,22 @@ const ye="waxup-water-surface",et="(prefers-reduced-motion: reduce)",tt="(pointe
       // intentionally crescent-shaped and broken by noise so it feels like
       // water meeting an object at the surface, not a decorative halo.
       float lowerDyR = phoneBottom - v_uv.y;
-      float lowerReachR = smoothstep(0.0, 0.020, lowerDyR) * (1.0 - smoothstep(0.22, 0.50, lowerDyR));
+      float lowerReachR = smoothstep(0.0, 0.016, lowerDyR) * (1.0 - smoothstep(0.15, 0.32, lowerDyR));
       float lowerXR = abs(v_uv.x - phoneCenterX);
-      float lowerNormXR = lowerXR / max(u_phone.z * 0.62, 0.001);
+      float lowerNormXR = lowerXR / max(u_phone.z * 0.50, 0.001);
       float lowerBreakup = oceanNoise(vec2(v_uv.x * 9.0, v_uv.y * 7.0 + waveTravel * 1.7));
       float lowerCurveR = phoneBottom - 0.022 - lowerNormXR * lowerNormXR * 0.055 +
         (lowerBreakup - 0.5) * 0.012;
-      float lowerTidalCrest = exp(-pow((v_uv.y - lowerCurveR) / 0.034, 2.0)) *
+      float lowerTidalCrest = exp(-pow((v_uv.y - lowerCurveR) / 0.027, 2.0)) *
         (1.0 - smoothstep(0.34, 1.16, lowerNormXR)) * lowerReachR *
         (0.62 + lowerBreakup * 0.52);
-      float lowerTidalFoam = exp(-pow((v_uv.y - (lowerCurveR + 0.010)) / 0.016, 2.0)) *
+      float lowerTidalFoam = exp(-pow((v_uv.y - (lowerCurveR + 0.010)) / 0.013, 2.0)) *
         (1.0 - smoothstep(0.30, 1.05, lowerNormXR)) * lowerReachR *
         smoothstep(0.38, 0.86, lowerBreakup);
-      float lowerTidalShadow = exp(-pow((v_uv.y - (lowerCurveR - 0.060)) / 0.060, 2.0)) *
+      float lowerTidalShadow = exp(-pow((v_uv.y - (lowerCurveR - 0.060)) / 0.048, 2.0)) *
         (1.0 - smoothstep(0.24, 1.18, lowerNormXR)) * lowerReachR;
       float lowerArmLineR = phoneBottom - 0.040 - max(lowerXR - u_phone.z * 0.27, 0.0) * 0.48;
-      float lowerTidalArms = exp(-pow((v_uv.y - lowerArmLineR) / 0.024, 2.0)) *
+      float lowerTidalArms = exp(-pow((v_uv.y - lowerArmLineR) / 0.019, 2.0)) *
         smoothstep(u_phone.z * 0.22, u_phone.z * 0.54, lowerXR) *
         (1.0 - smoothstep(u_phone.z * 0.56, u_phone.z * 1.14, lowerXR)) *
         lowerReachR * (0.42 + lowerBreakup * 0.58);
@@ -551,10 +551,10 @@ const ye="waxup-water-surface",et="(prefers-reduced-motion: reduce)",tt="(pointe
       color += moodCaustic * bowFoam2 * 0.025;
       color += moodElectric * bowSplash * 0.015;
       color += moodCaustic * bowWash * 0.010;
-      color *= mix(1.0, 0.70, lowerTidalShadow * lowerBowMotionR * 0.58);
-      color += moodCaustic * lowerTidalCrest * lowerBowMotionR * 0.24;
-      color += moodElectric * lowerTidalArms * lowerBowMotionR * 0.095;
-      color += moodCaustic * lowerTidalFoam * lowerBowMotionR * 0.30;
+      color *= mix(1.0, 0.82, lowerTidalShadow * lowerBowMotionR * 0.22);
+      color += moodCaustic * lowerTidalCrest * lowerBowMotionR * 0.12;
+      color += moodElectric * lowerTidalArms * lowerBowMotionR * 0.040;
+      color += moodCaustic * lowerTidalFoam * lowerBowMotionR * 0.12;
       // Trough shadow under the bow inner arm — gives the wake mass.
       color *= mix(1.0, 0.92, bowTroughR * 0.18);
       color += c_sun * warmGlint;
