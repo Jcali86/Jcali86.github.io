@@ -1,0 +1,27 @@
+# Security headers for Cloudflare Pages (static assets + prerendered pages).
+# NOTE: Pages applies _headers to STATIC responses only — /api/weather (a
+# Pages Function) does not get these; set headers in its Response objects
+# in src/pages/api/weather.ts if ever needed (low value: consumed via
+# fetch().json(), params numerically range-checked).
+#
+# HSTS: header ships now; the hstspreload.org SUBMISSION is deliberately
+# held until we're sure no plain-http subdomain of waxup.app will ever be
+# needed (submission is hard to undo; the header alone is reversible).
+#
+# Post-launch TODO: Content-Security-Policy — ship as
+# Content-Security-Policy-Report-Only first (inline module scripts + the
+# is:inline reveal gate need script-src 'unsafe-inline'; connect-src 'self'
+# is enough — the browser only calls same-origin /api/weather).
+#
+# Permissions-Policy MUST keep geolocation=(self): the Active Weather chip
+# calls navigator.geolocation.getCurrentPosition (WaterSurface.astro).
+
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(self), camera=(), microphone=(), payment=()
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
